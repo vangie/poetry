@@ -1,0 +1,32 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  poetry:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'auto generate chinese peotry'
+      Policies: 
+        - AliyunECSNetworkInterfaceManagementAccess
+      VpcConfig:
+        VpcId: 'vpc-uf6r2qatgfbdhgy2rhplo'
+        VSwitchIds: [ 'vsw-uf669ekf9zser1hrmgru4' ]
+        SecurityGroupId: 'sg-uf6jcqx1ogbr37hkvgxv'
+      NasConfig: 
+        UserId: 10003
+        GroupId: 10003
+        MountPoints: 
+          - ServerAddr: '3be7b4835d-pvs14.cn-shanghai.nas.aliyuncs.com:/'
+            MountDir: '/mnt/nas'
+    poetry:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Runtime: python3
+        CodeUri: './'
+        EnvironmentVariables:
+          PYTHONPATH: /mnt/nas/lib/python/lib/python3.6/site-packages
+          PYTHONUSERBASE: /mnt/nas/lib/python
+          converter_path: /mnt/nas/model/poetry/converter.pkl
+          checkpoint_path: /mnt/nas/model/poetry/
+        Timeout: 30
+        MemorySize: 192

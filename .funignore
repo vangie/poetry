@@ -1,0 +1,4 @@
+__pychache__
+data/
+train.py
+.DS_Store
