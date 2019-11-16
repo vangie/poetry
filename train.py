@@ -4,22 +4,23 @@ from model import CharRNN
 import os
 import codecs
 
-FLAGS = tf.flags.FLAGS
+flags = tf.compat.v1.flags
+FLAGS = flags.FLAGS
 
-tf.flags.DEFINE_string('name', 'default', 'name of the model')
-tf.flags.DEFINE_integer('num_seqs', 100, 'number of seqs in one batch')
-tf.flags.DEFINE_integer('num_steps', 100, 'length of one seq')
-tf.flags.DEFINE_integer('lstm_size', 128, 'size of hidden state of lstm')
-tf.flags.DEFINE_integer('num_layers', 2, 'number of lstm layers')
-tf.flags.DEFINE_boolean('use_embedding', False, 'whether to use embedding')
-tf.flags.DEFINE_integer('embedding_size', 128, 'size of embedding')
-tf.flags.DEFINE_float('learning_rate', 0.001, 'learning_rate')
-tf.flags.DEFINE_float('train_keep_prob', 0.5, 'dropout rate during training')
-tf.flags.DEFINE_string('input_file', '', 'utf8 encoded text file')
-tf.flags.DEFINE_integer('max_steps', 100000, 'max steps to train')
-tf.flags.DEFINE_integer('save_every_n', 1000, 'save the model every n steps')
-tf.flags.DEFINE_integer('log_every_n', 10, 'log to the screen every n steps')
-tf.flags.DEFINE_integer('max_vocab', 3500, 'max char number')
+flags.DEFINE_string('name', 'default', 'name of the model')
+flags.DEFINE_integer('num_seqs', 100, 'number of seqs in one batch')
+flags.DEFINE_integer('num_steps', 100, 'length of one seq')
+flags.DEFINE_integer('lstm_size', 128, 'size of hidden state of lstm')
+flags.DEFINE_integer('num_layers', 2, 'number of lstm layers')
+flags.DEFINE_boolean('use_embedding', False, 'whether to use embedding')
+flags.DEFINE_integer('embedding_size', 128, 'size of embedding')
+flags.DEFINE_float('learning_rate', 0.001, 'learning_rate')
+flags.DEFINE_float('train_keep_prob', 0.5, 'dropout rate during training')
+flags.DEFINE_string('input_file', '', 'utf8 encoded text file')
+flags.DEFINE_integer('max_steps', 100000, 'max steps to train')
+flags.DEFINE_integer('save_every_n', 1000, 'save the model every n steps')
+flags.DEFINE_integer('log_every_n', 10, 'log to the screen every n steps')
+flags.DEFINE_integer('max_vocab', 3500, 'max char number')
 
 
 def main(_):
@@ -53,4 +54,5 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.disable_eager_execution()
+    tf.compat.v1.app.run()

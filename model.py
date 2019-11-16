@@ -35,20 +35,20 @@ class CharRNN:
         self.use_embedding = use_embedding
         self.embedding_size = embedding_size
 
-        tf.reset_default_graph()
+        tf.compat.v1.reset_default_graph()
         self.build_inputs()
         self.build_lstm()
         self.build_loss()
         self.build_optimizer()
-        self.saver = tf.train.Saver()
+        self.saver = tf.compat.v1.train.Saver()
 
     def build_inputs(self):
         with tf.name_scope('inputs'):
-            self.inputs = tf.placeholder(tf.int32, shape=(
+            self.inputs = tf.compat.v1.placeholder(tf.int32, shape=(
                 self.num_seqs, self.num_steps), name='inputs')
-            self.targets = tf.placeholder(tf.int32, shape=(
+            self.targets = tf.compat.v1.placeholder(tf.int32, shape=(
                 self.num_seqs, self.num_steps), name='targets')
-            self.keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+            self.keep_prob = tf.compat.v1.placeholder(tf.float32, name='keep_prob')
 
             # 对于中文，需要使用embedding层
             # 英文字母没有必要用embedding层
@@ -56,31 +56,31 @@ class CharRNN:
                 self.lstm_inputs = tf.one_hot(self.inputs, self.num_classes)
             else:
                 with tf.device("/cpu:0"):
-                    embedding = tf.get_variable('embedding', [self.num_classes, self.embedding_size])
+                    embedding = tf.compat.v1.get_variable('embedding', [self.num_classes, self.embedding_size])
                     self.lstm_inputs = tf.nn.embedding_lookup(embedding, self.inputs)
 
     def build_lstm(self):
         # 创建单个cell并堆叠多层
         def get_a_cell(lstm_size, keep_prob):
-            lstm = tf.nn.rnn_cell.BasicLSTMCell(lstm_size)
-            drop = tf.nn.rnn_cell.DropoutWrapper(lstm, output_keep_prob=keep_prob)
+            lstm = tf.compat.v1.nn.rnn_cell.BasicLSTMCell(lstm_size)
+            drop = tf.compat.v1.nn.rnn_cell.DropoutWrapper(lstm, output_keep_prob=keep_prob)
             return drop
 
         with tf.name_scope('lstm'):
-            cell = tf.nn.rnn_cell.MultiRNNCell(
+            cell = tf.compat.v1.nn.rnn_cell.MultiRNNCell(
                 [get_a_cell(self.lstm_size, self.keep_prob) for _ in range(self.num_layers)]
             )
             self.initial_state = cell.zero_state(self.num_seqs, tf.float32)
 
             # 通过dynamic_rnn对cell展开时间维度
-            self.lstm_outputs, self.final_state = tf.nn.dynamic_rnn(cell, self.lstm_inputs, initial_state=self.initial_state)
+            self.lstm_outputs, self.final_state = tf.compat.v1.nn.dynamic_rnn(cell, self.lstm_inputs, initial_state=self.initial_state)
 
             # 通过lstm_outputs得到概率
             seq_output = tf.concat(self.lstm_outputs, 1)
             x = tf.reshape(seq_output, [-1, self.lstm_size])
 
-            with tf.variable_scope('softmax'):
-                softmax_w = tf.Variable(tf.truncated_normal([self.lstm_size, self.num_classes], stddev=0.1))
+            with tf.compat.v1.variable_scope('softmax'):
+                softmax_w = tf.Variable(tf.compat.v1.truncated_normal([self.lstm_size, self.num_classes], stddev=0.1))
                 softmax_b = tf.Variable(tf.zeros(self.num_classes))
 
             self.logits = tf.matmul(x, softmax_w) + softmax_b
@@ -95,15 +95,15 @@ class CharRNN:
 
     def build_optimizer(self):
         # 使用clipping gradients
-        tvars = tf.trainable_variables()
+        tvars = tf.compat.v1.trainable_variables()
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), self.grad_clip)
-        train_op = tf.train.AdamOptimizer(self.learning_rate)
+        train_op = tf.compat.v1.train.AdamOptimizer(self.learning_rate)
         self.optimizer = train_op.apply_gradients(zip(grads, tvars))
 
     def train(self, batch_generator, max_steps, save_path, save_every_n, log_every_n):
-        self.session = tf.Session()
+        self.session = tf.compat.v1.Session()
         with self.session as sess:
-            sess.run(tf.global_variables_initializer())
+            sess.run(tf.compat.v1.global_variables_initializer())
             # Train network
             step = 0
             new_state = sess.run(self.initial_state)
@@ -166,6 +166,6 @@ class CharRNN:
         return np.array(samples)
 
     def load(self, checkpoint):
-        self.session = tf.Session()
+        self.session = tf.compat.v1.Session()
         self.saver.restore(self.session, checkpoint)
         print('Restored from: {}'.format(checkpoint))
