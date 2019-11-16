@@ -3,19 +3,21 @@ from read_utils import TextConverter
 from model import CharRNN
 import os
 
-FLAGS = tf.flags.FLAGS
+flags = tf.compat.v1.flags
+FLAGS = flags.FLAGS
 
-tf.flags.DEFINE_integer('lstm_size', 128, 'size of hidden state of lstm')
-tf.flags.DEFINE_integer('num_layers', 2, 'number of lstm layers')
-tf.flags.DEFINE_boolean('use_embedding', False, 'whether to use embedding')
-tf.flags.DEFINE_integer('embedding_size', 128, 'size of embedding')
-tf.flags.DEFINE_string('converter_path', '', 'model/name/converter.pkl')
-tf.flags.DEFINE_string('checkpoint_path', '', 'checkpoint path')
-tf.flags.DEFINE_string('start_string', '', 'use this string to start generating')
-tf.flags.DEFINE_integer('max_length', 30, 'max length to generate')
+flags.DEFINE_integer('lstm_size', 128, 'size of hidden state of lstm')
+flags.DEFINE_integer('num_layers', 2, 'number of lstm layers')
+flags.DEFINE_boolean('use_embedding', False, 'whether to use embedding')
+flags.DEFINE_integer('embedding_size', 128, 'size of embedding')
+flags.DEFINE_string('converter_path', '', 'model/name/converter.pkl')
+flags.DEFINE_string('checkpoint_path', '', 'checkpoint path')
+flags.DEFINE_string('start_string', '', 'use this string to start generating')
+flags.DEFINE_integer('max_length', 30, 'max length to generate')
 
 
 def generate():
+    tf.compat.v1.disable_eager_execution()
     converter = TextConverter(filename=FLAGS.converter_path)
     if os.path.isdir(FLAGS.checkpoint_path):
         FLAGS.checkpoint_path =\

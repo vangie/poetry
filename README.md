@@ -59,7 +59,7 @@ RequestId: 938334c4-5407-4a72-93e1-6d59e52774d8          Billed Duration: 14074 
 1. 执行 `fun nas init` 初始化 nas 的相关配置
 2. 执行 `fun nas info` 可以查看本地 nas 的目录位置，因为我们前面 fun install target 直接指定了这个位置，因此不需要再做任何操作了
 3. 执行 `fun nas sync` 将本地 nas 资源上传到云端 NAS 服务
-4. 执行 `fun nas ls nas://poetry:/mnt/auto/` 查看我们是否已经正确将文件上传到了 NAS
+4. 执行 `fun nas ls nas://poetry/mnt/auto/` 查看我们是否已经正确将文件上传到了 NAS
 
 fun nas sync 的动态演示（为了演示效果，我们缩减了依赖体积）：
 
@@ -91,7 +91,7 @@ tar -xvf nas.tar.gz
 通过 `fun deploy` 部署函数到远端。
 
 ```bash
-$ fun deploy             
+$ fun deploy
 using region: cn-shanghai
 using accountId: ***********4733
 using accessKeyId: ***********EUz3
