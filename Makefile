@@ -1,0 +1,3 @@
+
+train:
+	script/train.sh
