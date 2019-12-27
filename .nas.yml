@@ -1,0 +1,4 @@
+nasMappings:
+  poetry:
+    - localNasDir: model
+      remoteNasDir: /mnt/auto/model

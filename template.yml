@@ -10,9 +10,9 @@ Resources:
       Properties:
         Handler: index.handler
         Runtime: python3
-        CodeUri: './'
+        CodeUri: ./
+        Timeout: 120
+        MemorySize: 2048
         EnvironmentVariables:
           converter_path: /mnt/auto/model/poetry/converter.pkl
           checkpoint_path: /mnt/auto/model/poetry/
-        Timeout: 120
-        MemorySize: 2048
